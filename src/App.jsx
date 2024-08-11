@@ -1,35 +1,67 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import React, { useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import {
+    decrement,
+    increment,
+    incrementByAmount,
+    incrementAsync,
+    incrementIfOdd,
+    selectCount,
+} from "./redux/counter/counterSlice";
+import styles from "./styles/Counter.module.css";
 
-function App() {
-  const [count, setCount] = useState(0)
+export default function App() {
+    const count = useSelector(selectCount);
+    const dispatch = useDispatch();
+    const [incrementAmount, setIncrementAmount] = useState("2");
 
-  return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    const incrementValue = Number(incrementAmount) || 0;
+
+    return (
+        <div>
+            <div className={styles.row}>
+                <button
+                    className={styles.button}
+                    aria-label="Decrement value"
+                    onClick={() => dispatch(decrement())}
+                >
+                    -
+                </button>
+                <span className={styles.value}>{count}</span>
+                <button
+                    className={styles.button}
+                    aria-label="Increment value"
+                    onClick={() => dispatch(increment())}
+                >
+                    +
+                </button>
+            </div>
+            <div className={styles.row}>
+                <input
+                    className={styles.textbox}
+                    aria-label="Set increment amount"
+                    value={incrementAmount}
+                    onChange={(e) => setIncrementAmount(e.target.value)}
+                />
+                <button
+                    className={styles.button}
+                    onClick={() => dispatch(incrementByAmount(incrementValue))}
+                >
+                    Add Amount
+                </button>
+                <button
+                    className={styles.asyncButton}
+                    onClick={() => dispatch(incrementAsync(incrementValue))}
+                >
+                    Add Async
+                </button>
+                <button
+                    className={styles.button}
+                    onClick={() => dispatch(incrementIfOdd(incrementValue))}
+                >
+                    Add If Odd
+                </button>
+            </div>
+        </div>
+    );
 }
-
-export default App
