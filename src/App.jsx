@@ -6,6 +6,7 @@ import { Outlet } from "react-router-dom";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import HomePage from "./components/Home";
+import RegisterPage from "./pages/register";
 
 const Layout = () => {
     return (
@@ -37,6 +38,10 @@ const router = createBrowserRouter([
     {
         path: "/login",
         element: <LoginPage />,
+    },
+    {
+        path: "/register",
+        element: <RegisterPage />,
     },
 ]);
 
