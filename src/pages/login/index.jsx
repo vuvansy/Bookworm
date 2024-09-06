@@ -8,11 +8,12 @@ const LoginPage = () => {
     const [isSubmit, setIsSubmit] = useState(false);
 
     const onFinish = async (values) => {
-        console.log(values);
+        // console.log(values);
         const { username, password } = values;
         setIsSubmit(true);
         const res = await callLogin(username, password);
         if (res?.data) {
+            localStorage.setItem('access_token', res.data.access_token)
             message.success("Đăng nhập tài khoản thành công!");
             navigate("/");
         } else {
