@@ -9,8 +9,12 @@ import HomePage from "./components/Home";
 import RegisterPage from "./pages/register";
 import { callFetchAccount } from "./services/api";
 import { useEffect } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { doGetAccountAction } from "./redux/account/accountSlice";
+import Loading from "./components/Loading";
+import NotFound from "./components/NotFound";
+import AdminPage from "./pages/admin";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 const Layout = () => {
     return (
@@ -22,11 +26,27 @@ const Layout = () => {
     );
 };
 
+const LayoutAdmin = () => {
+    const isAdminRoute = window.location.pathname.startsWith("/admin");
+    const user = useSelector((state) => state.account.user);
+    const userRole = user.role;
+
+    return (
+        <div className="layout-app">
+            {isAdminRoute && userRole === "ADMIN" && <Header />}
+            {/* <Header /> */}
+            <Outlet />
+            {/* <Footer /> */}
+            {isAdminRoute && userRole === "ADMIN" && <Footer />}
+        </div>
+    );
+};
+
 const router = createBrowserRouter([
     {
         path: "/",
         element: <Layout />,
-        errorElement: <div>404 Trang không tồn tại</div>,
+        errorElement: <NotFound />,
         children: [
             { index: true, element: <HomePage /> },
             {
@@ -39,6 +59,31 @@ const router = createBrowserRouter([
             },
         ],
     },
+
+    {
+        path: "/admin",
+        element: <LayoutAdmin />,
+        errorElement: <NotFound />,
+        children: [
+            {
+                index: true,
+                element: (
+                    <ProtectedRoute>
+                        <AdminPage />
+                    </ProtectedRoute>
+                ),
+            },
+            {
+                path: "user",
+                element: <ContactPage />,
+            },
+            {
+                path: "book",
+                element: <BookPage />,
+            },
+        ],
+    },
+
     {
         path: "/login",
         element: <LoginPage />,
@@ -52,7 +97,18 @@ const router = createBrowserRouter([
 export default function App() {
     const dispatch = useDispatch();
 
+    const isAuthenticated = useSelector(
+        (state) => state.account.isAuthenticated
+    );
+
     const getAccount = async () => {
+        if (
+            window.location.pathname === "/login" ||
+            window.location.pathname === "/register" ||
+            window.location.pathname === "/"
+        )
+            return; //Không gọi API
+
         const res = await callFetchAccount();
         if (res && res.data) {
             dispatch(doGetAccountAction(res.data));
@@ -65,7 +121,14 @@ export default function App() {
 
     return (
         <>
-            <RouterProvider router={router} />
+            {isAuthenticated === true ||
+            window.location.pathname === "/login" ||
+            window.location.pathname === "/register" ||
+            window.location.pathname === "/" ? (
+                <RouterProvider router={router} />
+            ) : (
+                <Loading />
+            )}
         </>
     );
 }
