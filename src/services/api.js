@@ -12,3 +12,8 @@ export const callRegister = (fullName, email, password, phone) => {
 export const callLogin = (username, password) => {
     return axios.post("/api/v1/auth/login", { username, password });
 };
+
+//Lấy thông tin người dùng khi F5 lại trang
+export const callFetchAccount = () => {
+    return axios.get("/api/v1/auth/account");
+};

@@ -7,6 +7,10 @@ import Header from "./components/Header";
 import Footer from "./components/Footer";
 import HomePage from "./components/Home";
 import RegisterPage from "./pages/register";
+import { callFetchAccount } from "./services/api";
+import { useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { doGetAccountAction } from "./redux/account/accountSlice";
 
 const Layout = () => {
     return (
@@ -46,6 +50,19 @@ const router = createBrowserRouter([
 ]);
 
 export default function App() {
+    const dispatch = useDispatch();
+
+    const getAccount = async () => {
+        const res = await callFetchAccount();
+        if (res && res.data) {
+            dispatch(doGetAccountAction(res.data));
+        }
+    };
+
+    useEffect(() => {
+        getAccount();
+    }, []);
+
     return (
         <>
             <RouterProvider router={router} />
