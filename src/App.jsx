@@ -83,15 +83,12 @@ const router = createBrowserRouter([
 export default function App() {
     const dispatch = useDispatch();
 
-    const isAuthenticated = useSelector(
-        (state) => state.account.isAuthenticated
-    );
+    const isLoading = useSelector((state) => state.account.isLoading);
 
     const getAccount = async () => {
         if (
             window.location.pathname === "/login" ||
-            window.location.pathname === "/register" ||
-            window.location.pathname === "/"
+            window.location.pathname === "/register"
         )
             return; //Không gọi API
 
@@ -107,7 +104,7 @@ export default function App() {
 
     return (
         <>
-            {isAuthenticated === true ||
+            {isLoading === true ||
             window.location.pathname === "/login" ||
             window.location.pathname === "/register" ||
             window.location.pathname === "/" ? (

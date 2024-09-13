@@ -2,6 +2,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
     isAuthenticated: false, //Xác định người dung đã đăng nhập chưa
+    isLoading: true, //Dùng để render ra giao diện
     user: {
         email: "",
         phone: "",
@@ -19,10 +20,12 @@ export const accountSlice = createSlice({
     reducers: {
         doLoginAction: (state, action) => {
             state.isAuthenticated = true;
+            state.isLoading = false;
             state.user = action.payload;
         },
         doGetAccountAction: (state, action) => {
             state.isAuthenticated = true;
+            state.isLoading = false;
             state.user = action.payload.user;
         },
     },
